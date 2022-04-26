@@ -10,8 +10,8 @@ contract CampaignFactory {
 
     Campaign[] public deployedCampaigns;
 
-    function createCampaign(uint minimumFund, string memory name, string memory description, string memory image, uint targetFund) public {
-        Campaign newCampaign = new Campaign(minimumFund, name, description, image, targetFund);
+    function createCampaign(uint minimumFund, uint threshold, string memory name, string memory description, string memory image, uint targetFund) public {
+        Campaign newCampaign = new Campaign(minimumFund, threshold, name, description, image, targetFund);
         deployedCampaigns.push(newCampaign);
     }
 
@@ -24,6 +24,7 @@ contract CampaignFactory {
 contract Campaign {
 
     uint public minimumPayment;
+    uint public thresholdToBeApprover;
     address public campaignOwner;
     string public campaignName;
     string public campaignDescription;
@@ -31,16 +32,23 @@ contract Campaign {
     uint public targetAmount;
     bool public complete;
     uint public fundReceivedSoFar;
+    address[] public contributers;
+    address[] public approvers;
+    uint public totalContributers;
+    uint public approversCount;
 
 
-    constructor(uint minimumFund, string memory name, string memory description, string memory image, uint targetFund) {
+    constructor(uint minimumFund, uint threshold, string memory name, string memory description, string memory image, uint targetFund) {
         minimumPayment = minimumFund;
+        thresholdToBeApprover = threshold;
         campaignOwner = msg.sender;
         campaignName = name;
         campaignDescription = description;
         imageUrl = image;
         targetAmount = targetFund;
         complete = false;
+        totalContributers = 0;
+        approversCount = 0;
     }
 
     modifier onlyOwner() {
@@ -49,7 +57,16 @@ contract Campaign {
     }
 
     function receiveFund() public payable {
+        require(msg.value >= minimumPayment);
+
+        contributers.push(msg.sender);
         fundReceivedSoFar += msg.value;
+        ++totalContributers;
+
+        if (msg.value >= thresholdToBeApprover) {
+            approvers.push(msg.sender);
+            ++approversCount;
+        }
     }
 
     function showCurrentFund() public view returns(uint) {
