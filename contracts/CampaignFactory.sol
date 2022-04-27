@@ -23,9 +23,10 @@ contract CampaignFactory {
 }
 
 contract Campaign {
-    struct Contributer {
+    struct Contributor {
         bool hasFundBefore;
         bool isApprover;
+        uint contribution;
     }
 
     uint public minimumPayment;
@@ -37,9 +38,9 @@ contract Campaign {
     uint public targetAmount;
     bool public complete;
     uint public fundReceivedSoFar;
-    mapping(address => Contributer) contributers;
+    mapping(address => Contributor) contributors;
     address[] public approvers;
-    uint public contributerCount;
+    uint public contributorCount;
     uint public approverCount;
 
     constructor(uint minimumFund, uint threshold, string memory name, string memory description, string memory image, uint targetFund) {
@@ -51,7 +52,7 @@ contract Campaign {
         imageUrl = image;
         targetAmount = targetFund;
         complete = false;
-        contributerCount = 0;
+        contributorCount = 0;
         approverCount = 0;
     }
 
@@ -68,13 +69,16 @@ contract Campaign {
     function receiveFund() public payable excludeOwner {
         require(msg.value >= minimumPayment, "Oops! Funding doesn't meet the minimum contribution.");
 
-        if ((contributers[msg.sender]).hasFundBefore == false) {
-            contributers[msg.sender] = Contributer(true, false);
-            ++contributerCount;
+        if ((contributors[msg.sender]).hasFundBefore == false) {
+            contributors[msg.sender] = Contributor(true, false, msg.value);
+            ++contributorCount;
+        }
+        else {
+            contributors[msg.sender].contribution += msg.value;
         }
 
-        if ((contributers[msg.sender].isApprover == false) && (msg.value >= thresholdToBeApprover)) {
-            contributers[msg.sender].isApprover = true;
+        if ((contributors[msg.sender].isApprover == false) && (msg.value >= thresholdToBeApprover)) {
+            contributors[msg.sender].isApprover = true;
             ++approverCount;
         }
 
