@@ -26,6 +26,7 @@ contract Campaign {
     struct Contributer {
         bool hasFundBefore;
         bool isApprover;
+        uint contribution;
     }
 
     uint public minimumPayment;
@@ -69,8 +70,11 @@ contract Campaign {
         require(msg.value >= minimumPayment, "Oops! Funding doesn't meet the minimum contribution.");
 
         if ((contributers[msg.sender]).hasFundBefore == false) {
-            contributers[msg.sender] = Contributer(true, false);
+            contributers[msg.sender] = Contributer(true, false, msg.value);
             ++contributerCount;
+        }
+        else {
+            contributers[msg.sender].contribution += msg.value;
         }
 
         if ((contributers[msg.sender].isApprover == false) && (msg.value >= thresholdToBeApprover)) {
