@@ -6,6 +6,7 @@ pragma solidity >=0.7.0 <0.9.0;
  * @title CampaignFactory
  * @dev Store & retrieve Crowdfunding campaigns in a variable
  */
+
 contract CampaignFactory {
 
     Campaign[] public deployedCampaigns;
@@ -22,6 +23,10 @@ contract CampaignFactory {
 }
 
 contract Campaign {
+    struct Contributer {
+        bool hasFundBefore;
+        bool isApprover;
+    }
 
     uint public minimumPayment;
     uint public thresholdToBeApprover;
@@ -32,11 +37,10 @@ contract Campaign {
     uint public targetAmount;
     bool public complete;
     uint public fundReceivedSoFar;
-    address[] public contributers;
+    mapping(address => Contributer) contributers;
     address[] public approvers;
-    uint public totalContributers;
-    uint public approversCount;
-
+    uint public contributerCount;
+    uint public approverCount;
 
     constructor(uint minimumFund, uint threshold, string memory name, string memory description, string memory image, uint targetFund) {
         minimumPayment = minimumFund;
@@ -47,26 +51,34 @@ contract Campaign {
         imageUrl = image;
         targetAmount = targetFund;
         complete = false;
-        totalContributers = 0;
-        approversCount = 0;
+        contributerCount = 0;
+        approverCount = 0;
     }
 
     modifier onlyOwner() {
-        require(msg.sender == campaignOwner, "Action is only available to campaign's owner.");
+        require(msg.sender == campaignOwner, "Oops! Action is only available to campaign's owner.");
         _;
     }
 
-    function receiveFund() public payable {
-        require(msg.value >= minimumPayment);
+    modifier excludeOwner() {
+         require(msg.sender != campaignOwner, "Oops! Campaign creators are not allowed to fund their own campaigns.");
+         _;
+    }
 
-        contributers.push(msg.sender);
-        fundReceivedSoFar += msg.value;
-        ++totalContributers;
+    function receiveFund() public payable excludeOwner {
+        require(msg.value >= minimumPayment, "Oops! Funding doesn't meet the minimum contribution.");
 
-        if (msg.value >= thresholdToBeApprover) {
-            approvers.push(msg.sender);
-            ++approversCount;
+        if ((contributers[msg.sender]).hasFundBefore == false) {
+            contributers[msg.sender] = Contributer(true, false);
+            ++contributerCount;
         }
+
+        if ((contributers[msg.sender].isApprover == false) && (msg.value >= thresholdToBeApprover)) {
+            contributers[msg.sender].isApprover = true;
+            ++approverCount;
+        }
+
+        fundReceivedSoFar += msg.value;
     }
 
     function showCurrentFund() public view returns(uint) {
