@@ -32,10 +32,13 @@ contract Campaign {
     struct Request {
         string description;
         uint requestFund;
-        address recipient;
+        address payable recipient;
         bool isCompleted;
-        uint approvalCount;
-        address[] approversOfRequest;
+        uint weighted;
+        uint nonApproverCount;
+        uint approverCount;
+        address[] nonApprovers;
+        address[] approvers;
     }
 
     uint public minimumPayment;
@@ -52,7 +55,7 @@ contract Campaign {
     uint public contributorCount;
     uint public approverCount;
     mapping (uint => Request) requests;
-    uint public requestCount;
+    uint public requestIndex;
 
     constructor(uint minimumFund, uint threshold, string memory name, string memory description, string memory image, uint targetFund) {
         minimumPayment = minimumFund;
@@ -65,6 +68,7 @@ contract Campaign {
         complete = false;
         contributorCount = 0;
         approverCount = 0;
+        requestIndex = 0;
     }
 
     modifier onlyOwner() {
@@ -77,27 +81,37 @@ contract Campaign {
          _;
     }
 
-    function createRequest(string memory description, uint requestFund, address recipient) public onlyOwner {
-        Request storage newRequest = requests[requestCount++];
+    function createRequest(string memory description, uint requestFund, address payable recipient, uint weighted) public onlyOwner {
+        Request storage newRequest = requests[requestIndex++];
         newRequest.description = description;
         newRequest.requestFund = requestFund;
         newRequest.recipient = recipient;
         newRequest.isCompleted = false;
-        newRequest.approvalCount = 0;
+        newRequest.weighted  = weighted;
+        newRequest.nonApproverCount = 0;
+        newRequest.approverCount = 0;
     }
 
-    function approveRequest(uint index) public excludeOwner{
-        require(contributors[msg.sender].isApprover == true, "Sorry you are not eligible to approve the request.");
-
-        uint numOfApprovers = requests[index].approversOfRequest.length;
-        for (uint i = 0; i < numOfApprovers; ++i) {
-            if (requests[index].approversOfRequest[i] == msg.sender) {
-                return;
-            }
+    function approveRequest(uint index) public excludeOwner {
+        require(contributors[msg.sender].hasFundBefore == true, "Sorry you are not eligible to approve the request.");
+        require(hasVotedBefore(index, msg.sender) == false, "You have voted the request already.");
+        if (isApprover(msg.sender)) {
+            requests[index].nonApproverCount++;
+            requests[index].approvers.push(msg.sender);
         }
+        else {
+            requests[index].approverCount++;
+            requests[index].nonApprovers.push(msg.sender);
+        }
+    }
 
-        requests[index].approversOfRequest.push(msg.sender);
-        requests[index].approvalCount++;
+    function finalizeRequest(uint index) public onlyOwner {
+        uint totalWeightedApprovals = requests[index].nonApproverCount + (requests[index].approverCount * requests[index].weighted);
+        require(!requests[index].isCompleted);
+        require(totalWeightedApprovals > (contributorCount / 2));
+
+        requests[index].recipient.transfer(requests[index].requestFund);
+        requests[index].isCompleted = true;
     }
 
     function receiveFund() public payable excludeOwner {
@@ -125,5 +139,29 @@ contract Campaign {
 
     function withdrawTotalFund(address payable _to) public onlyOwner {
         _to.transfer(address(this).balance);
+    }
+
+    function hasVotedBefore(uint index, address _receipient) private view returns(bool) {
+        if (isApprover(_receipient)) {
+            uint _len = requests[index].approvers.length;
+            for (uint i = 0; i < _len; ++i) {
+                if (requests[index].approvers[i] == _receipient) {
+                    return true;
+                }
+            }
+        }
+        else {
+            uint _len = requests[index].nonApprovers.length;
+            for (uint i = 0; i < _len; ++i) {
+                if (requests[index].nonApprovers[i] == _receipient) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    function isApprover(address _receipient) private view returns(bool) {
+        return contributors[_receipient].isApprover;
     }
 }
