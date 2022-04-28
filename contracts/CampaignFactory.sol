@@ -29,6 +29,15 @@ contract Campaign {
         uint contribution;
     }
 
+    struct Request {
+        string description;
+        uint requestFund;
+        address recipient;
+        bool isCompleted;
+        uint approvalCount;
+        address[] approversOfRequest;
+    }
+
     uint public minimumPayment;
     uint public thresholdToBeApprover;
     address public campaignOwner;
@@ -42,6 +51,8 @@ contract Campaign {
     address[] public approvers;
     uint public contributorCount;
     uint public approverCount;
+    mapping (uint => Request) requests;
+    uint public requestCount;
 
     constructor(uint minimumFund, uint threshold, string memory name, string memory description, string memory image, uint targetFund) {
         minimumPayment = minimumFund;
@@ -64,6 +75,29 @@ contract Campaign {
     modifier excludeOwner() {
          require(msg.sender != campaignOwner, "Oops! Campaign creators are not allowed to fund their own campaigns.");
          _;
+    }
+
+    function createRequest(string memory description, uint requestFund, address recipient) public onlyOwner {
+        Request storage newRequest = requests[requestCount++];
+        newRequest.description = description;
+        newRequest.requestFund = requestFund;
+        newRequest.recipient = recipient;
+        newRequest.isCompleted = false;
+        newRequest.approvalCount = 0;
+    }
+
+    function approveRequest(uint index) public excludeOwner{
+        require(contributors[msg.sender].isApprover == true, "Sorry you are not eligible to approve the request.");
+
+        uint numOfApprovers = requests[index].approversOfRequest.length;
+        for (uint i = 0; i < numOfApprovers; ++i) {
+            if (requests[index].approversOfRequest[i] == msg.sender) {
+                return;
+            }
+        }
+
+        requests[index].approversOfRequest.push(msg.sender);
+        requests[index].approvalCount++;
     }
 
     function receiveFund() public payable excludeOwner {
