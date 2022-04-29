@@ -107,8 +107,9 @@ contract Campaign {
 
     function finalizeRequest(uint index) public onlyOwner {
         uint totalWeightedApprovals = requests[index].nonApproverCount + (requests[index].approverCount * requests[index].weighted);
-        require(!requests[index].isCompleted);
-        require(totalWeightedApprovals > (contributorCount / 2));
+        require(!requests[index].isCompleted, "The request has already been finalized.");
+        require(totalWeightedApprovals > (contributorCount / 2), "The voting has not passed yet.");
+        require(address(this).balance >= requests[index].requestFund, "The total contribution to this campaign is not enough to pay the request.");
 
         requests[index].recipient.transfer(requests[index].requestFund);
         requests[index].isCompleted = true;
