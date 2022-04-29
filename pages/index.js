@@ -1,6 +1,22 @@
 import Head from 'next/head'
+import { useState } from 'react'
+import { useWeb3 } from "@3rdweb/hooks" 
+
 
 export default function Home() {
+
+  /*
+    async function connectWallet() {
+      if (typeof window.ethereum !== 'undefined') {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+      }
+    }
+*/
+
+    const { connectWallet, address, error } = useWeb3();
+    error ? console.log(error) : null;
+
     return (
         <div className="container">
             <Head>
@@ -8,6 +24,11 @@ export default function Home() {
             </Head>
 
             <main>
+              { address ? (
+                <h3>walletAddress: {address}</h3>
+              ) : (
+                <button onClick={()=>connectWallet("injected")}>Connect Wallet</button>
+              )}
                 <h1 className="title">
                     Welcome to JustFund App!
                 </h1>
