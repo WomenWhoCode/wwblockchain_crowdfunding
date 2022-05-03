@@ -1,5 +1,6 @@
+import Layout from "../comps/Layout";
+import "../styles/global.css";
 import { ThirdwebWeb3Provider } from "@3rdweb/hooks";
-
 import "regenerator-runtime/runtime";
 
 function MyApp({ Component, pageProps }) {
@@ -10,12 +11,14 @@ function MyApp({ Component, pageProps }) {
   };
 
   return (
-    <ThirdwebWeb3Provider
+    <Layout>
+      <ThirdwebWeb3Provider
       supportedChainIds={supportedChainIds}
       connectors={connectors}
     >
       <Component {...pageProps} />
-    </ThirdwebWeb3Provider>
+      </ThirdwebWeb3Provider>
+    </Layout>
   );
 }
 

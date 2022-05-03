@@ -1,7 +1,8 @@
 import Head from 'next/head'
 import { useState } from 'react'
-import { useWeb3 } from "@3rdweb/hooks" 
-
+import { useWeb3 } from "@3rdweb/hooks"
+import Navbar from '../comps/Navbar'; 
+import Footer from '../comps/Footer';
 
 export default function Home() {
 
@@ -22,7 +23,6 @@ export default function Home() {
             <Head>
                 <title>JustFund App</title>
             </Head>
-
             <main>
               { address ? (
                 <h3>walletAddress: {address}</h3>
@@ -33,16 +33,6 @@ export default function Home() {
                     Welcome to JustFund App!
                 </h1>
             </main>
-
-            <footer>
-                <a
-                    href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                </a>
-            </footer>
-
             <style jsx>{`
         .container {
           min-height: 100vh;
