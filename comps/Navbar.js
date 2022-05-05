@@ -7,8 +7,8 @@ const Navbar = () => {
             <h1>Just Fund</h1>
             </div>
             <Link href="/"><a>Home</a></Link>
-            <Link href="/campaign"><a>Campaign List</a></Link>
-            <Link href="/campaign/new"><a>Create Campaign</a></Link>
+            <Link href="/campaigns"><a>Campaign List</a></Link>
+            <Link href="/campaigns/new"><a>Create Campaign</a></Link>
        </nav>
     );
    }
