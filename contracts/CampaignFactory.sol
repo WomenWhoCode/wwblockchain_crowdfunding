@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity >=0.8.0 <0.9.0;
 
 /**
  * @title CampaignFactory
@@ -9,11 +9,17 @@ pragma solidity >=0.7.0 <0.9.0;
 
 contract CampaignFactory {
 
-    Campaign[] public deployedCampaigns;
+    Campaign[] deployedCampaigns;
 
-    function createCampaign(uint minimumFund, uint threshold, string memory name, string memory description, string memory image, uint targetFund) public {
-        Campaign newCampaign = new Campaign(minimumFund, threshold, name, description, image, targetFund);
+    event CampaignCreated(address owner, uint minimumFund, uint threshold, string name, string description, string image, uint targetFund);
+
+    function createCampaign(uint minimumFund, uint threshold, string memory name, 
+        string memory description, string memory image, uint targetFund) external {
+
+        Campaign newCampaign = new Campaign(msg.sender, minimumFund, threshold, name, description, image, targetFund);
         deployedCampaigns.push(newCampaign);
+
+        emit CampaignCreated(msg.sender, minimumFund, threshold, name, description, image, targetFund);
     }
 
     function getDeployedCampaigns() public view returns (Campaign[] memory) {
@@ -28,10 +34,16 @@ contract Campaign {
         uint contribution;
     }
 
+    enum State {
+        Fundraising,
+        Expired,
+        Successful,
+        Finished
+    }
+
     struct Request {
         string description;
         uint requestFund;
-        address payable recipient;
         bool isCompleted;
         uint weighted;
         uint nonApproverCount;
@@ -47,7 +59,6 @@ contract Campaign {
     string campaignDescription;
     string imageUrl;
     uint targetAmount;
-    bool complete;
     uint fundReceivedSoFar;
     mapping(address => Contributor) contributors;
     address[] approvers;
@@ -55,19 +66,26 @@ contract Campaign {
     uint approverCount;
     mapping (uint => Request) requests;
     uint requestIndex;
+    State state;
 
-    constructor(uint minimumFund, uint threshold, string memory name, string memory description, string memory image, uint targetFund) {
+    // Event that will be emitted whenever funding will be received
+    event FundingReceived(address contributor, uint amount, uint fundReceivedSoFar);
+    // Event that will be emitted whenever the project starter has received the funds
+    event OwnerPaid(address recipient, uint amount);
+    event CampaignFinished(address owner, string name, string description, uint targetAmount, uint fundReceivedSoFar);
+
+    constructor(address owner, uint minimumFund, uint threshold, string memory name, string memory description, string memory image, uint targetFund) {
         minimumPayment = minimumFund;
         thresholdToBeApprover = threshold;
-        campaignOwner = msg.sender;
+        campaignOwner = owner;
         campaignName = name;
         campaignDescription = description;
         imageUrl = image;
         targetAmount = targetFund;
-        complete = false;
         contributorCount = 0;
         approverCount = 0;
         requestIndex = 0;
+        state = State.Fundraising;
     }
 
     modifier onlyOwner() {
@@ -80,11 +98,20 @@ contract Campaign {
          _;
     }
 
-    function createRequest(string memory description, uint requestFund, address payable recipient, uint weighted) public onlyOwner {
+    // Modifier to check current state
+    modifier inState(State _state) {
+        require(state == _state, "Wrong campaign state!");
+        _;
+    }
+    modifier notInState(State _state) {
+        require(state != _state, "Wrong campaign state!");
+        _;
+    }
+
+    function createRequest(string memory description, uint requestFund, uint weighted) public onlyOwner inState(State.Successful) {
         Request storage newRequest = requests[requestIndex++];
         newRequest.description = description;
         newRequest.requestFund = requestFund;
-        newRequest.recipient = recipient;
         newRequest.isCompleted = false;
         newRequest.weighted  = weighted;
         newRequest.nonApproverCount = 0;
@@ -104,17 +131,23 @@ contract Campaign {
         }
     }
 
-    function finalizeRequest(uint index) public onlyOwner {
+    function finalizeRequest(uint index) public payable onlyOwner {
         uint totalWeightedApprovals = requests[index].nonApproverCount + (requests[index].approverCount * requests[index].weighted);
         require(!requests[index].isCompleted, "The request has already been finalized.");
         require(totalWeightedApprovals > (contributorCount / 2), "The voting has not passed yet.");
         require(address(this).balance >= requests[index].requestFund, "The total contribution to this campaign is not enough to pay the request.");
 
-        requests[index].recipient.transfer(requests[index].requestFund);
+        payable(campaignOwner).transfer(requests[index].requestFund);
         requests[index].isCompleted = true;
+        emit OwnerPaid(campaignOwner, requests[index].requestFund);
+
+        if (address(this).balance == 0) {
+            state = State.Finished;
+            emit CampaignFinished(campaignOwner, campaignName, campaignDescription, targetAmount, fundReceivedSoFar);
+        }
     }
 
-    function receiveFund() external payable excludeOwner {
+    function receiveFund() external payable excludeOwner notInState(State.Finished) {
         require(msg.value >= minimumPayment, "Oops! Funding doesn't meet the minimum contribution.");
 
         if ((contributors[msg.sender]).contribution > 0) {
@@ -125,20 +158,20 @@ contract Campaign {
             ++contributorCount;
         }
 
-        if ((contributors[msg.sender].isApprover == false) && (msg.value >= thresholdToBeApprover)) {
+        if (contributors[msg.sender].isApprover == false && contributors[msg.sender].contribution >= thresholdToBeApprover) {
             contributors[msg.sender].isApprover = true;
             ++approverCount;
         }
 
         fundReceivedSoFar += msg.value;
+        if (fundReceivedSoFar >= targetAmount) {
+            state = State.Successful;
+        }
+        emit FundingReceived(msg.sender, msg.value, fundReceivedSoFar);
     }
 
     function showCurrentBalance() public view returns(uint) {
         return address(this).balance;
-    }
-
-    function withdrawTotalFund(address payable _to) public onlyOwner {
-        _to.transfer(address(this).balance);
     }
 
     function hasVotedBefore(uint index, address _receipient) private view returns(bool) {
@@ -173,8 +206,11 @@ contract Campaign {
         string memory description,
         string memory image,
         uint targetAmt,
-        bool isCompleted,
-        uint fundReceived
+        uint fundReceived,
+        State campaignState,
+        uint balance,
+        uint contributorsCount,
+        uint approversCount
     ){
         minPayment = minimumPayment;
         threshold = thresholdToBeApprover;
@@ -183,7 +219,10 @@ contract Campaign {
         description = campaignDescription;
         image = imageUrl;
         targetAmt = targetAmount;
-        isCompleted = complete;
         fundReceived = fundReceivedSoFar;
+        campaignState = state;
+        balance = address(this).balance;
+        contributorsCount = contributorCount;
+        approversCount = approverCount;
     }
 }
