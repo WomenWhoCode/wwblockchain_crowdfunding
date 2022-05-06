@@ -24,7 +24,6 @@ contract CampaignFactory {
 
 contract Campaign {
     struct Contributor {
-        bool hasFundBefore;
         bool isApprover;
         uint contribution;
     }
@@ -41,21 +40,21 @@ contract Campaign {
         address[] approvers;
     }
 
-    uint public minimumPayment;
-    uint public thresholdToBeApprover;
-    address public campaignOwner;
-    string public campaignName;
-    string public campaignDescription;
-    string public imageUrl;
-    uint public targetAmount;
-    bool public complete;
-    uint public fundReceivedSoFar;
+    uint minimumPayment;
+    uint thresholdToBeApprover;
+    address campaignOwner;
+    string campaignName;
+    string campaignDescription;
+    string imageUrl;
+    uint targetAmount;
+    bool complete;
+    uint fundReceivedSoFar;
     mapping(address => Contributor) contributors;
-    address[] public approvers;
-    uint public contributorCount;
-    uint public approverCount;
+    address[] approvers;
+    uint contributorCount;
+    uint approverCount;
     mapping (uint => Request) requests;
-    uint public requestIndex;
+    uint requestIndex;
 
     constructor(uint minimumFund, uint threshold, string memory name, string memory description, string memory image, uint targetFund) {
         minimumPayment = minimumFund;
@@ -93,7 +92,7 @@ contract Campaign {
     }
 
     function approveRequest(uint index) public excludeOwner {
-        require(contributors[msg.sender].hasFundBefore == true, "Sorry you are not eligible to approve the request.");
+        require(contributors[msg.sender].contribution > 0, "Sorry you are not eligible to approve the request.");
         require(hasVotedBefore(index, msg.sender) == false, "You have voted the request already.");
         if (isApprover(msg.sender)) {
             requests[index].nonApproverCount++;
@@ -115,15 +114,15 @@ contract Campaign {
         requests[index].isCompleted = true;
     }
 
-    function receiveFund() public payable excludeOwner {
+    function receiveFund() external payable excludeOwner {
         require(msg.value >= minimumPayment, "Oops! Funding doesn't meet the minimum contribution.");
 
-        if ((contributors[msg.sender]).hasFundBefore == false) {
-            contributors[msg.sender] = Contributor(true, false, msg.value);
-            ++contributorCount;
+        if ((contributors[msg.sender]).contribution > 0) {
+            contributors[msg.sender].contribution += msg.value;
         }
         else {
-            contributors[msg.sender].contribution += msg.value;
+            contributors[msg.sender] = Contributor(false, msg.value);
+            ++contributorCount;
         }
 
         if ((contributors[msg.sender].isApprover == false) && (msg.value >= thresholdToBeApprover)) {
@@ -134,7 +133,7 @@ contract Campaign {
         fundReceivedSoFar += msg.value;
     }
 
-    function showCurrentFund() public view returns(uint) {
+    function showCurrentBalance() public view returns(uint) {
         return address(this).balance;
     }
 
@@ -164,5 +163,27 @@ contract Campaign {
 
     function isApprover(address _receipient) private view returns(bool) {
         return contributors[_receipient].isApprover;
+    }
+
+    function getDetails() public view returns (
+        uint minPayment,
+        uint threshold,
+        address owner,
+        string memory name,
+        string memory description,
+        string memory image,
+        uint targetAmt,
+        bool isCompleted,
+        uint fundReceived
+    ){
+        minPayment = minimumPayment;
+        threshold = thresholdToBeApprover;
+        owner = campaignOwner;
+        name = campaignName;
+        description = campaignDescription;
+        image = imageUrl;
+        targetAmt = targetAmount;
+        isCompleted = complete;
+        fundReceived = fundReceivedSoFar;
     }
 }
