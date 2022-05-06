@@ -1,4 +1,5 @@
-//this will list all available campaigns
+//this page will list all available campaigns
+
 
 const Campaign = () => {
     return ( 
