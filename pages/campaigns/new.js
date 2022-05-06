@@ -1,5 +1,4 @@
-import Navbar from '../../comps/Navbar'; 
-import Footer from '../../comps/Footer';
+
 
 const NewRequest = () => {
    // Handles the submit event on form submit.
