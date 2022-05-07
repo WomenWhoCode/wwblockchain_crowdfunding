@@ -1,4 +1,6 @@
-
+import { useState } from 'react'
+import { useWeb3 } from "@3rdweb/hooks"
+import styles from '../../styles/Home.module.css'
 
 const NewRequest = () => {
    // Handles the submit event on form submit.
@@ -42,11 +44,18 @@ const NewRequest = () => {
        <input type="text" id="target_amt" name="target_amt" required />
        <br></br>
        <br></br>
-       <button className="request-button" type="submit">Connect Wallet</button>
+       <button className="request-button" type="submit">Submit Request</button>
      </form>
  );
+ const { connectWallet, address, error } = useWeb3();
+ error ? console.log(error) : null;
    return ( 
       <div><h1>New Campaign Request</h1>
+      { address ? (
+              <h3 className={styles.text}>walletAddress: {address}</h3>
+            ) : (
+              <button className={styles.btn} onClick={()=>connectWallet("injected")}>Connect Wallet</button>
+            )}  
       {NewCampaignForm}
      </div>
     );
