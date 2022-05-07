@@ -1,5 +1,8 @@
-import Link from "next/link";
-import { useTheme, Text } from '@nextui-org/react';
+//import Link from "next/link";
+import { useTheme, 
+         Text, 
+         Link 
+      } from '@nextui-org/react';
 
 
  
@@ -12,7 +15,7 @@ const Navbar = () => {
             <div className="logo">
             <Text
                css={{
-               color: '$blue800',
+                  color: '$cyan900',
                }}> <h1>Just Fund</h1> 
           </Text>
            
