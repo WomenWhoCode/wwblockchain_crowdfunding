@@ -43,7 +43,6 @@ const NewRequest = () => {
     // setTxError(error.message)
 } 
   // ethereum end
-
     // const res = await fetch('/api/request', {
     //   body: JSON.stringify({
     //     minimum_contr_amt: minimum_contr_amt,
@@ -58,7 +57,6 @@ const NewRequest = () => {
     //   method: 'POST',
     // });
    // const result = await res.json();
-    
    alert(`Create Campaign : Success`);
   }
   const NewCampaignForm = (
