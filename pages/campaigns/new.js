@@ -1,6 +1,10 @@
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { useWeb3 } from "@3rdweb/hooks"
 import styles from '../../styles/Home.module.css'
+
+import { contractAddress } from '../../config.js'
+import CampaignFactorySC from '../../utils/CampaignFactory.json'
+import { ethers } from 'ethers'
 
 const NewRequest = () => {
    // Handles the submit event on form submit.
@@ -12,21 +16,49 @@ const NewRequest = () => {
     const campaign_desc = event.target.campaign_desc.value;
     const img_url = event.target.img_url.value;
     const target_amt = event.target.target_amt.value;
-    const res = await fetch('/api/request', {
-      body: JSON.stringify({
-        minimum_contr_amt: minimum_contr_amt,
-        campaign_name: campaign_name,
-        campaign_desc: campaign_desc,
-        img_url: img_url,
-        target_amt: target_amt
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    });
+  // ethereum start
+  try {
+    const { ethereum } = window
+    if (ethereum) {
+      console.log('ethereum....',ethereum)
+        const provider = new ethers.providers.Web3Provider(ethereum)
+        const signer = provider.getSigner()
+        const campaignFactoryContract = new ethers.Contract(
+            contractAddress,
+            CampaignFactorySC.abi,
+            signer
+        )
+        let cmp = await campaignFactoryContract.createCampaign(minimum_contr_amt, 3, campaign_name, campaign_desc, img_url, target_amt);
+        console.log('createCampaign....', cmp)
+        //tx = await campaignFactoryContract.getDeployedCampaigns()
+        //console.log('getting DeployedCampaigns....', tx)
+        setLoadingState(1)
+        alert(`Create Campaign : Success`);
+    } else {
+        console.log("Ethereum object doesn't exist!")
+    }
+} catch (error) {
+    console.log('Error creating campaign', error)
+    alert(`Error creating campaign: error`);
+    // setTxError(error.message)
+} 
+  // ethereum end
+
+    // const res = await fetch('/api/request', {
+    //   body: JSON.stringify({
+    //     minimum_contr_amt: minimum_contr_amt,
+    //     campaign_name: campaign_name,
+    //     campaign_desc: campaign_desc,
+    //     img_url: img_url,
+    //     target_amt: target_amt
+    //   }),
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   method: 'POST',
+    // });
     const result = await res.json();
-    alert(`Request Campaign name: ${result.msg}`);
+    
 
   }
   const NewCampaignForm = (
