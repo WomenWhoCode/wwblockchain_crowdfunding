@@ -57,9 +57,9 @@ const NewRequest = () => {
     //   },
     //   method: 'POST',
     // });
-    const result = await res.json();
+   // const result = await res.json();
     
-
+   alert(`Create Campaign : Success`);
   }
   const NewCampaignForm = (
       <form className="container" onSubmit={handleSubmit}>
