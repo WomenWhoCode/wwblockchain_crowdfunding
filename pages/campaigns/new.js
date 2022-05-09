@@ -1,3 +1,7 @@
+/** 
+ * New campaign create page 
+ * abhattachan
+ */
 import { useState,useEffect } from 'react'
 import { useWeb3 } from "@3rdweb/hooks"
 import styles from '../../styles/Home.module.css'
@@ -16,7 +20,7 @@ const NewRequest = () => {
     const campaign_desc = event.target.campaign_desc.value;
     const img_url = event.target.img_url.value;
     const target_amt = event.target.target_amt.value;
-  // ethereum start
+  // ethereum start 
   try {
     const { ethereum } = window
     if (ethereum) {
@@ -30,8 +34,6 @@ const NewRequest = () => {
         )
         let cmp = await campaignFactoryContract.createCampaign(minimum_contr_amt, 3, campaign_name, campaign_desc, img_url, target_amt);
         console.log('createCampaign....', cmp)
-        //tx = await campaignFactoryContract.getDeployedCampaigns()
-        //console.log('getting DeployedCampaigns....', tx)
         setLoadingState(1)
         alert(`Create Campaign : Success`);
     } else {
