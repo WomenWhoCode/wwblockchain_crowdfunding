@@ -1,4 +1,15 @@
+/** 
+ * New campaign create page 
+ * abhattachan
+ * 02 May 2022
+ */
+import { useState,useEffect } from 'react'
+import { useWeb3 } from "@3rdweb/hooks"
+import styles from '../../styles/Home.module.css'
 
+import { contractAddress } from '../../config.js'
+import CampaignFactorySC from '../../utils/CampaignFactory.json'
+import { ethers } from 'ethers'
 
 const NewRequest = () => {
    // Handles the submit event on form submit.
@@ -10,22 +21,46 @@ const NewRequest = () => {
     const campaign_desc = event.target.campaign_desc.value;
     const img_url = event.target.img_url.value;
     const target_amt = event.target.target_amt.value;
-    const res = await fetch('/api/request', {
-      body: JSON.stringify({
-        minimum_contr_amt: minimum_contr_amt,
-        campaign_name: campaign_name,
-        campaign_desc: campaign_desc,
-        img_url: img_url,
-        target_amt: target_amt
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    });
-    const result = await res.json();
-    alert(`Request Campaign name: ${result.msg}`);
-
+  // ethereum start 
+  try {
+    const { ethereum } = window
+    if (ethereum) {
+      console.log('ethereum....',ethereum)
+        const provider = new ethers.providers.Web3Provider(ethereum)
+        const signer = provider.getSigner()
+        const campaignFactoryContract = new ethers.Contract(
+            contractAddress,
+            CampaignFactorySC.abi,
+            signer
+        )
+        let cmp = await campaignFactoryContract.createCampaign(minimum_contr_amt, 3, campaign_name, campaign_desc, img_url, target_amt);
+        console.log('createCampaign....', cmp)
+        setLoadingState(1)
+        alert(`Create Campaign : Success`);
+    } else {
+        console.log("Ethereum object doesn't exist!")
+    }
+} catch (error) {
+    console.log('Error creating campaign', error)
+    alert(`Error creating campaign: error`);
+    // setTxError(error.message)
+} 
+  // ethereum end
+    // const res = await fetch('/api/request', {
+    //   body: JSON.stringify({
+    //     minimum_contr_amt: minimum_contr_amt,
+    //     campaign_name: campaign_name,
+    //     campaign_desc: campaign_desc,
+    //     img_url: img_url,
+    //     target_amt: target_amt
+    //   }),
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   method: 'POST',
+    // });
+   // const result = await res.json();
+   alert(`Create Campaign : Success`);
   }
   const NewCampaignForm = (
       <form className="container" onSubmit={handleSubmit}>
@@ -42,11 +77,18 @@ const NewRequest = () => {
        <input type="text" id="target_amt" name="target_amt" required />
        <br></br>
        <br></br>
-       <button className="request-button" type="submit">Connect Wallet</button>
+       <button className="request-button" type="submit">Submit Request</button>
      </form>
  );
+ const { connectWallet, address, error } = useWeb3();
+ error ? console.log(error) : null;
    return ( 
       <div><h1>New Campaign Request</h1>
+      { address ? (
+              <h3 className={styles.text}>walletAddress: {address}</h3>
+            ) : (
+              <button className={styles.btn} onClick={()=>connectWallet("injected")}>Connect Wallet</button>
+            )}  
       {NewCampaignForm}
      </div>
     );
