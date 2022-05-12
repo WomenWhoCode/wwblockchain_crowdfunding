@@ -24,9 +24,16 @@ export default function Home() {
                 <title>JustFund App</title>
             </Head>
             <Container>
-              <h1 className={styles.title}>
+            <div className={styles.title}>
+              <Text
+                h1 
+                css={{
+                  textGradient: "45deg, $blue600 -20%, $pink600 50%",
+                  }}>
+              
                   Welcome to JustFund App!
-              </h1>
+              </Text>
+              </div>
               <Card>
                 <Row justify="center" align="center">
                 <Text
@@ -43,7 +50,7 @@ export default function Home() {
                 </Row>
               </Card>
               { address ? (
-                <h3 >walletAddress: {address}</h3>
+                <h3>walletAddress: {address}</h3>
               ) : (
                 //<button className={styles.btn} onClick={()=>connectWallet("injected")}>Connect Wallet</button>
                 <Button className={styles.btn} 

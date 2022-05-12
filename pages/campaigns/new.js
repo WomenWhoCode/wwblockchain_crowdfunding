@@ -84,6 +84,7 @@ const NewRequest = () => {
  const { connectWallet, address, error } = useWeb3();
  error ? console.log(error) : null;
    return ( 
+     <>
       <div><h1>New Campaign Request</h1>
       { address ? (
                 <h3 >walletAddress: {address}</h3>
@@ -96,9 +97,9 @@ const NewRequest = () => {
                           Connect Wallet
                 </Button>
        )}
-
-        {NewCampaignForm}
+      {NewCampaignForm}
      </div>
+     </>
     );
    }
    
