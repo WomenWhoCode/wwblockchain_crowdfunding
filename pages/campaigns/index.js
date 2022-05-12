@@ -6,6 +6,8 @@ import CampaignFactorySC from '../../utils/CampaignFactory.json'
 import CampaignSC from '../../utils/Campaign.json'
 import { ethers } from 'ethers'
 import axios from 'axios'
+//import { Button } from '"@nextui-org/react"'
+
 
 
 const Campaign = () => {
@@ -196,19 +198,19 @@ const Campaign = () => {
                      </div>
                      <div className='font-semibold text-lg text-center mb-4'>
                          {campaignDetails && campaignDetails[0] ? (
-                             <><h1>Campaing details with index 0</h1><span>Minimum payment: {parseInt(campaignDetails[0]['minPayment']._hex, 16)}</span><br /><span>Name: {campaignDetails[0]['name']}</span><br /><span>Description: {campaignDetails[0]['description']}</span><br /><span>Image: {campaignDetails[0]['image']}</span><br /><span>Fund raised: {parseInt(campaignDetails[0]['fundReceived']._hex, 16)}</span><br /></>
+                             <><h1>Campaign details with index 0</h1><span>Minimum payment: {parseInt(campaignDetails[0]['minPayment']._hex, 16)}</span><br /><span>Name: {campaignDetails[0]['name']}</span><br /><span>Description: {campaignDetails[0]['description']}</span><br /><span>Image: {campaignDetails[0]['image']}</span><br /><span>Fund raised: {parseInt(campaignDetails[0]['fundReceived']._hex, 16)}</span><br /></>
                          ) : ( <span></span> )
                          } 
                     </div>
                     <div className='font-semibold text-lg text-center mb-4'>
                          {campaignDetails && campaignDetails[1] ? (
-                             <><h1>Campaing details with index 1</h1><span>Minimum payment: {parseInt(campaignDetails[1]['minPayment']._hex, 16)}</span><br /><span>Name: {campaignDetails[1]['name']}</span><br /><span>Description: {campaignDetails[1]['description']}</span><br /><span>Image: {campaignDetails[1]['image']}</span><br /><span>Fund raised: {parseInt(campaignDetails[1]['fundReceived']._hex, 16)}</span><br /></>
+                             <><h1>Campaign details with index 1</h1><span>Minimum payment: {parseInt(campaignDetails[1]['minPayment']._hex, 16)}</span><br /><span>Name: {campaignDetails[1]['name']}</span><br /><span>Description: {campaignDetails[1]['description']}</span><br /><span>Image: {campaignDetails[1]['image']}</span><br /><span>Fund raised: {parseInt(campaignDetails[1]['fundReceived']._hex, 16)}</span><br /></>
                          ) : ( <span></span> )
                          } 
                     </div>
                     <div className='font-semibold text-lg text-center mb-4'>
                          {campaignDetails && campaignDetails[2] ? (
-                             <><h1>Campaing details with index 2</h1><span>Minimum payment: {parseInt(campaignDetails[2]['minPayment']._hex, 16)}</span><br /><span>Name: {campaignDetails[2]['name']}</span><br /><span>Description: {campaignDetails[2]['description']}</span><br /><span>Image: {campaignDetails[2]['image']}</span><br /><span>Fund raised: {parseInt(campaignDetails[2]['fundReceived']._hex, 16)}</span><br /></>
+                             <><h1>Campaign details with index 2</h1><span>Minimum payment: {parseInt(campaignDetails[2]['minPayment']._hex, 16)}</span><br /><span>Name: {campaignDetails[2]['name']}</span><br /><span>Description: {campaignDetails[2]['description']}</span><br /><span>Image: {campaignDetails[2]['image']}</span><br /><span>Fund raised: {parseInt(campaignDetails[2]['fundReceived']._hex, 16)}</span><br /></>
                          ) : ( <span></span> )
                          } 
                     </div>
