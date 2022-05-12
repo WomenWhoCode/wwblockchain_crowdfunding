@@ -8,7 +8,7 @@ import axios from 'axios'
 
 const Campaign = () => {
    const [campaignsList, setCampaignsList] = useState(null)
-   const [campaignDetails, setCampaignDetails] = useState(null)
+   const [campaignDetails, setCampaignDetails] = useState([])
    const [loadingState, setLoadingState] = useState(0)
    const [txError, setTxError] = useState(null)
    const [currentAccount, setCurrentAccount] = useState('')
@@ -105,10 +105,15 @@ const Campaign = () => {
                 let tx = await campaignFactoryContract.getDeployedCampaigns()
                 console.log('getting DeployedCampaigns....', tx)
                 setCampaignsList(tx)
-                let details = await getCampaignDetails(tx[1])
+                tx.map((campaignAddress) => {
+                    console.log('retrieved Campaign details for address> ', campaignAddress)
+                    getCampaignDetails(campaignAddress)
+                    .then((details) => 
+                        console.log('retrieved Campaign details!', details)
+                    )
+                })
 
                 setLoadingState(1)
-                console.log('retrieved Campaign details!', details)
 
             } else {
                 console.log("Ethereum object doesn't exist!")
@@ -131,12 +136,9 @@ const Campaign = () => {
                     CampaignSC.abi,
                     signer
                 )
-                campaignContract.getDetails()
-                    .then((value) => {
-                        console.log("Get campaign details: ", value)
-                        /// setCampaignDetails(value);
-                    })
-                    .catch((error) => console.log(error))
+                let details = await campaignContract.getDetails()
+                console.log("Get campaign details: ", details)
+                setCampaignDetails( arr => [...arr, details])
             } else {
                 console.log("Ethereum object doesn't exist!")
             }
@@ -191,14 +193,25 @@ const Campaign = () => {
                         </ul>
                      </div>
                      <div className='font-semibold text-lg text-center mb-4'>
-                            <h1>Campaing details with index 2</h1>
-                            
-                            
+                         {campaignDetails && campaignDetails[0] ? (
+                             <><h1>Campaing details with index 0</h1><span>Minimum payment: {parseInt(campaignDetails[0]['minPayment']._hex, 16)}</span><br /><span>Name: {campaignDetails[0]['name']}</span><br /><span>Description: {campaignDetails[0]['description']}</span><br /><span>Image: {campaignDetails[0]['image']}</span><br /><span>Fund raised: {parseInt(campaignDetails[0]['fundReceived']._hex, 16)}</span><br /></>
+                         ) : ( <span></span> )
+                         } 
+                    </div>
+                    <div className='font-semibold text-lg text-center mb-4'>
+                         {campaignDetails && campaignDetails[1] ? (
+                             <><h1>Campaing details with index 1</h1><span>Minimum payment: {parseInt(campaignDetails[1]['minPayment']._hex, 16)}</span><br /><span>Name: {campaignDetails[1]['name']}</span><br /><span>Description: {campaignDetails[1]['description']}</span><br /><span>Image: {campaignDetails[1]['image']}</span><br /><span>Fund raised: {parseInt(campaignDetails[1]['fundReceived']._hex, 16)}</span><br /></>
+                         ) : ( <span></span> )
+                         } 
+                    </div>
+                    <div className='font-semibold text-lg text-center mb-4'>
+                         {campaignDetails && campaignDetails[2] ? (
+                             <><h1>Campaing details with index 2</h1><span>Minimum payment: {parseInt(campaignDetails[2]['minPayment']._hex, 16)}</span><br /><span>Name: {campaignDetails[2]['name']}</span><br /><span>Description: {campaignDetails[2]['description']}</span><br /><span>Image: {campaignDetails[2]['image']}</span><br /><span>Fund raised: {parseInt(campaignDetails[2]['fundReceived']._hex, 16)}</span><br /></>
+                         ) : ( <span></span> )
+                         } 
                     </div>
                 </div>
             )}
-        
-       <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
        </div>
    );
    }
