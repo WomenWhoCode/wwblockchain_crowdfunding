@@ -40,11 +40,11 @@ const NewRequest = () => {
     } else {
         console.log("Ethereum object doesn't exist!")
     }
-} catch (error) {
+  } catch (error) {
     console.log('Error creating campaign', error)
     alert(`Error creating campaign: error`);
     // setTxError(error.message)
-} 
+  } 
   // ethereum end
     // const res = await fetch('/api/request', {
     //   body: JSON.stringify({
@@ -85,10 +85,10 @@ const NewRequest = () => {
    return ( 
       <div><h1>New Campaign Request</h1>
       { address ? (
-              <h3 className={styles.text}>walletAddress: {address}</h3>
-            ) : (
-              <button className={styles.btn} onClick={()=>connectWallet("injected")}>Connect Wallet</button>
-            )}  
+        <h3 className={styles.text}>walletAddress: {address}</h3>
+      ) : (
+        <button className={styles.btn} onClick={()=>connectWallet("injected")}>Connect Wallet</button>
+      )}
       {NewCampaignForm}
      </div>
     );
