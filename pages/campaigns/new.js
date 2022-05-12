@@ -10,6 +10,7 @@ import styles from '../../styles/Home.module.css'
 import { contractAddress } from '../../config.js'
 import CampaignFactorySC from '../../utils/CampaignFactory.json'
 import { ethers } from 'ethers'
+import { Button } from '@nextui-org/react'
 
 const NewRequest = () => {
    // Handles the submit event on form submit.
@@ -85,11 +86,18 @@ const NewRequest = () => {
    return ( 
       <div><h1>New Campaign Request</h1>
       { address ? (
-        <h3 className={styles.text}>walletAddress: {address}</h3>
-      ) : (
-        <button className={styles.btn} onClick={()=>connectWallet("injected")}>Connect Wallet</button>
-      )}
-      {NewCampaignForm}
+                <h3 >walletAddress: {address}</h3>
+              ) : (
+                //<button className={styles.btn} onClick={()=>connectWallet("injected")}>Connect Wallet</button>
+                <Button className={styles.btn} 
+                        color="gradient" 
+                        auto ghost 
+                        onClick={()=>connectWallet("injected")}>
+                          Connect Wallet
+                </Button>
+       )}
+
+        {NewCampaignForm}
      </div>
     );
    }
