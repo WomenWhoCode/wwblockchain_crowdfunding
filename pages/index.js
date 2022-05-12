@@ -2,6 +2,7 @@ import Head from 'next/head'
 import { useState } from 'react'
 import { useWeb3 } from "@3rdweb/hooks"
 import styles from '../styles/Home.module.css'
+import { Button } from "@nextui-org/react"; 
 
 export default function Home() {
 
@@ -30,7 +31,8 @@ export default function Home() {
               { address ? (
                 <h3 className={styles.text}>walletAddress: {address}</h3>
               ) : (
-                <button className={styles.btn} onClick={()=>connectWallet("injected")}>Connect Wallet</button>
+                //<button className={styles.btn} onClick={()=>connectWallet("injected")}>Connect Wallet</button>
+                <Button className={styles.btn} onClick={()=>connectWallet("injected")}>Connect Wallet</Button>
               )}
               
               
