@@ -1,13 +1,13 @@
+import { Text, css } from '@nextui-org/react';
+
 const Footer = () => {
     return ( 
-        <div>Copyright @2022 JustFund
-             <a
-                    href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                </a>
+        <div className="footer">
+            <Text color="secondary">Copyright @2022 JustFund</Text>
         </div>
+        
+             
+      
     );
    }
    

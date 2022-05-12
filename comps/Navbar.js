@@ -1,14 +1,22 @@
-import Link from "next/link";
+import { useTheme, 
+         Text, 
+         Link 
+      } from '@nextui-org/react';
+
+
+ 
 
 const Navbar = () => {
+   const theme = useTheme(); 
+
     return ( 
        <nav>
             <div className="logo">
-            <h1>Just Fund</h1>
+               <Text h2 color="secondary"> Just Fund </Text>
             </div>
-            <Link href="/"><a>Home</a></Link>
-            <Link href="/campaigns"><a>Campaign List</a></Link>
-            <Link href="/campaigns/new"><a>Create Campaign</a></Link>
+            <Link color="secondary" href="/">Home</Link>
+            <Link color="secondary" href="/campaigns">Campaign List</Link>
+            <Link color="secondary" href="/campaigns/new">Create Campaign</Link>
        </nav>
     );
    }
