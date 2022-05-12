@@ -85,6 +85,7 @@ const Campaign = () => {
     useEffect(() => {
         checkIfWalletIsConnected()
         checkCorrectNetwork()
+        getCampaignsList()
     }, [])
 
     // retrieve list of campaigns
@@ -103,11 +104,12 @@ const Campaign = () => {
 
                 let tx = await campaignFactoryContract.getDeployedCampaigns()
                 console.log('getting DeployedCampaigns....', tx)
+                setCampaignsList(tx)
+                let details = await getCampaignDetails(tx[1])
 
                 setLoadingState(1)
-                console.log('retrieved Campaigns!', tx)
+                console.log('retrieved Campaign details!', details)
 
-                setCampaignsList(tx)
             } else {
                 console.log("Ethereum object doesn't exist!")
             }
@@ -116,8 +118,7 @@ const Campaign = () => {
             setTxError(error.message)
         }
     }
-/*
-    // Gets the minted NFT data
+
     const getCampaignDetails = async (tokenId) => {
         try {
             const { ethereum } = window
@@ -125,17 +126,17 @@ const Campaign = () => {
             if (ethereum) {
                 const provider = new ethers.providers.Web3Provider(ethereum)
                 const signer = provider.getSigner()
-                const campaignFactoryContract = new ethers.Contract(
-                    contractAddress,
-                    CampaignFactorySC.abi,
+                const campaignContract = new ethers.Contract(
+                    tokenId,
+                    CampaignSC.abi,
                     signer
                 )
-
-                let tokenUri = await campaignFactoryContract.tokenURI(tokenId)
-                let data = await axios.get(tokenUri)
-                let meta = data.data
-
-                setCampaignDetails(meta)  // mint.image
+                campaignContract.getDetails()
+                    .then((value) => {
+                        console.log("Get campaign details: ", value)
+                        /// setCampaignDetails(value);
+                    })
+                    .catch((error) => console.log(error))
             } else {
                 console.log("Ethereum object doesn't exist!")
             }
@@ -143,7 +144,7 @@ const Campaign = () => {
             console.log(error)
             setTxError(error.message)
         }
-    }*/
+    }
 
     return ( 
        <div>
@@ -157,12 +158,7 @@ const Campaign = () => {
                     Connect Wallet
                 </button>
             ) : correctNetwork ? (
-                <button
-                    className='text-2xl font-bold py-3 px-12 bg-black shadow-lg shadow-[#6FFFE9] rounded-lg mb-10 hover:scale-105 transition duration-500 ease-in-out'
-                    onClick={getCampaignsList}
-                >
-                    get Campaigns List
-                </button>
+                <div></div>
             ) :  (
                <div className='flex flex-col justify-center items-center mb-20 font-bold text-2xl gap-y-3'>
                    <div>----------------------------------------</div>
@@ -185,11 +181,20 @@ const Campaign = () => {
                     )
             ) : (
                 <div className='flex flex-col justify-center items-center'>
-                     <h1>Retrieved from blockchaing:</h1>
                      <div className='font-semibold text-lg text-center mb-4'>
-                        {campaignsList}
+                        <ul>
+                            {campaignsList ? (
+                                campaignsList.map((value) => {
+                                    return <li key={value}>{value}</li>
+                                }) ) : ( <span></span> ) 
+                            }
+                        </ul>
                      </div>
-                    
+                     <div className='font-semibold text-lg text-center mb-4'>
+                            <h1>Campaing details with index 2</h1>
+                            
+                            
+                    </div>
                 </div>
             )}
         
