@@ -190,7 +190,7 @@ const Campaign = () => {
                      <div className='font-semibold text-lg text-center mb-4'>
                          {campaignDetails ? (
                              campaignDetails.map((campaign) => {
-                                return <><h2>Campaing "{campaign.details['name']}"</h2><span>Minimum payment: {parseInt(campaign.details['minPayment']._hex, 16)}</span><br /><span>Description: {campaign.details['description']}</span><br /><span>Image: {campaign.details['image']}</span><br /><span>Fund raised: {parseInt(campaign.details['fundReceived']._hex, 16)}</span><br /><Link block color="secondary" href={"/campaigns/details?pid="+campaign.address}>Campaign Details</Link><br /></>
+                                return <><h2>Campaign "{campaign.details['name']}"</h2><span>Minimum payment: {parseInt(campaign.details['minPayment']._hex, 16)}</span><br /><span>Description: {campaign.details['description']}</span><br /><span>Image: {campaign.details['image']}</span><br /><span>Fund raised: {parseInt(campaign.details['fundReceived']._hex, 16)}</span><br /><Link block color="secondary" href={"/campaigns/details?pid="+campaign.address}>Campaign Details</Link><br /></>
                             })
                          ) : ( <span></span> )
                          } 
