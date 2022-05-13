@@ -112,9 +112,6 @@ const Campaign = () => {
                 tx.map((campaignAddress) => {
                     console.log('retrieved Campaign details for address> ', campaignAddress)
                     getCampaignDetails(campaignAddress)
-                    .then((details) => 
-                        console.log('retrieved Campaign details!', details)
-                    )
                 })
                 setLoadingState(1)
 
