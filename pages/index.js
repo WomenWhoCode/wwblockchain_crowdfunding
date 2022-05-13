@@ -36,10 +36,30 @@ export default function Home() {
                     padding: '$2 $4'
                   }}
                 >
-                  A decentralized crowdfunding platform 
-
+                  A decentralized crowdfunding platform.
                 </Text>
-
+                </Row>
+                <Row justify="center" align="center">
+                <Text
+                  css={{
+                    color: '$purple50', 
+                    fontSize: 'xs', 
+                    padding: '$2 $4'
+                  }}
+                >
+                  Any project has a chance of getting visibility and getting funded.
+                </Text>
+                </Row>
+                <Row justify="center" align="center">
+                <Text
+                  css={{
+                    color: '$purple50', 
+                    fontSize: 'xs', 
+                    padding: '$2 $4'
+                  }}
+                >
+                  No fees. Our crowdfunding less expensive for creators and investors.
+                </Text>
                 </Row>
               </Card>
               { address ? (
