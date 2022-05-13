@@ -10,6 +10,7 @@ import styles from '../../styles/Home.module.css'
 import { contractAddress } from '../../config.js'
 import CampaignFactorySC from '../../utils/CampaignFactory.json'
 import { ethers } from 'ethers'
+import { Button, Text, Input, Grid } from '@nextui-org/react'
 
 const NewRequest = () => {
    // Handles the submit event on form submit.
@@ -83,14 +84,30 @@ const NewRequest = () => {
  const { connectWallet, address, error } = useWeb3();
  error ? console.log(error) : null;
    return ( 
-      <div><h1>New Campaign Request</h1>
+     <>
+      <div className={styles.title}>
+        <Text
+          h2 
+          css={{
+            textGradient: "45deg, $blue600 -20%, $pink600 50%",
+            }}>New Campaign Request</Text>
+        </div>
+      <div>
+
       { address ? (
-        <h3 className={styles.text}>walletAddress: {address}</h3>
-      ) : (
-        <button className={styles.btn} onClick={()=>connectWallet("injected")}>Connect Wallet</button>
-      )}
+                <h3 >walletAddress: {address}</h3>
+              ) : (
+                //<button className={styles.btn} onClick={()=>connectWallet("injected")}>Connect Wallet</button>
+                <Button className={styles.btn} 
+                        color="gradient" 
+                        auto ghost 
+                        onClick={()=>connectWallet("injected")}>
+                          Connect Wallet
+                </Button>
+       )}
       {NewCampaignForm}
      </div>
+     </>
     );
    }
    
