@@ -5,7 +5,8 @@ import { contractAddress } from '../../config.js'
 import CampaignFactorySC from '../../utils/CampaignFactory.json'
 import CampaignSC from '../../utils/Campaign.json'
 import { ethers } from 'ethers'
-import { Link, Button } from '@nextui-org/react';
+//import { Button } from '"@nextui-org/react"'
+import { Link } from '@nextui-org/react';
 
 
 
