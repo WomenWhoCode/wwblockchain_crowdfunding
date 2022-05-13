@@ -5,7 +5,7 @@ import { contractAddress } from '../../config.js'
 import CampaignFactorySC from '../../utils/CampaignFactory.json'
 import CampaignSC from '../../utils/Campaign.json'
 import { ethers } from 'ethers'
-import { Link } from '@nextui-org/react';
+import { Link, Button } from '@nextui-org/react';
 
 
 
@@ -115,7 +115,6 @@ const Campaign = () => {
                         console.log('retrieved Campaign details!', details)
                     )
                 })
-
                 setLoadingState(1)
 
             } else {
@@ -188,29 +187,10 @@ const Campaign = () => {
             ) : (
                 <div className='flex flex-col justify-center items-center'>
                      <div className='font-semibold text-lg text-center mb-4'>
-                        <ul>
-                            {campaignsList ? (
-                                campaignsList.map((value) => {
-                                    return <li key={value}>{value}</li>
-                                }) ) : ( <span></span> ) 
-                            }
-                        </ul>
-                     </div>
-                     <div className='font-semibold text-lg text-center mb-4'>
-                         {campaignDetails && campaignDetails[0] ? (
-                             <><h1>Campaing details with index 0</h1><span>Minimum payment: {parseInt(campaignDetails[0].details['minPayment']._hex, 16)}</span><br /><span>Name: {campaignDetails[0].details['name']}</span><br /><span>Description: {campaignDetails[0].details['description']}</span><br /><span>Image: {campaignDetails[0].details['image']}</span><br /><span>Fund raised: {parseInt(campaignDetails[0].details['fundReceived']._hex, 16)}</span><br /><Link color="secondary" href={"/campaigns/details?pid="+campaignDetails[0].address}>Campaign Details</Link></>
-                         ) : ( <span></span> )
-                         } 
-                    </div>
-                    <div className='font-semibold text-lg text-center mb-4'>
-                         {campaignDetails && campaignDetails[1] ? (
-                             <><h1>Campaing details with index 1</h1><span>Minimum payment: {parseInt(campaignDetails[1].details['minPayment']._hex, 16)}</span><br /><span>Name: {campaignDetails[1].details['name']}</span><br /><span>Description: {campaignDetails[1].details['description']}</span><br /><span>Image: {campaignDetails[1].details['image']}</span><br /><span>Fund raised: {parseInt(campaignDetails[1].details['fundReceived']._hex, 16)}</span><br /><Link color="secondary" href={"/campaigns/details?pid="+campaignDetails[1].address}>Campaign Details</Link></>
-                         ) : ( <span></span> )
-                         } 
-                    </div>
-                    <div className='font-semibold text-lg text-center mb-4'>
-                         {campaignDetails && campaignDetails[2] ? (
-                             <><h1>Campaing details with index 2</h1><span>Minimum payment: {parseInt(campaignDetails[2].details['minPayment']._hex, 16)}</span><br /><span>Name: {campaignDetails[2].details['name']}</span><br /><span>Description: {campaignDetails[2].details['description']}</span><br /><span>Image: {campaignDetails[2].details['image']}</span><br /><span>Fund raised: {parseInt(campaignDetails[2].details['fundReceived']._hex, 16)}</span><br /><Link color="secondary" href={"/campaigns/details?pid="+campaignDetails[2].address}>Campaign Details</Link></>
+                         {campaignDetails ? (
+                             campaignDetails.map((campaign) => {
+                                return <><h2>Campaing "{campaign.details['name']}"</h2><span>Minimum payment: {parseInt(campaign.details['minPayment']._hex, 16)}</span><br /><span>Description: {campaign.details['description']}</span><br /><span>Image: {campaign.details['image']}</span><br /><span>Fund raised: {parseInt(campaign.details['fundReceived']._hex, 16)}</span><br /><Link block color="secondary" href={"/campaigns/details?pid="+campaign.address}>Campaign Details</Link><br /></>
+                            })
                          ) : ( <span></span> )
                          } 
                     </div>
