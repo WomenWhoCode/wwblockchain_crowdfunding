@@ -10,7 +10,7 @@ import styles from '../../styles/Home.module.css'
 import { contractAddress } from '../../config.js'
 import CampaignFactorySC from '../../utils/CampaignFactory.json'
 import { ethers } from 'ethers'
-import { Button } from '@nextui-org/react'
+import { Button, Text, Input, Grid } from '@nextui-org/react'
 
 const NewRequest = () => {
    // Handles the submit event on form submit.
@@ -63,29 +63,37 @@ const NewRequest = () => {
    // const result = await res.json();
    alert(`Create Campaign : Success`);
   }
-  const NewCampaignForm = (
-      <form className="container" onSubmit={handleSubmit}>
-       <label htmlFor="minimum_contr_amt">Minimum Contribution Amount</label>
-       <input type="text" id="minimum_contr_amt" name="minimum_contr_amt" required />   
-       <label htmlFor="campaign_name">Campaign Name</label>
-       <input type="text" id="campaign_name" name="campaign_name" required />  
-      <label htmlFor="campaign_desc">Campaign Description</label>
-       <textarea id="campaign_desc" name="campaign_desc" required />
-       <label htmlFor="img_url">Image URL</label>
-       <input type="text" id="img_url" name="img_url" required />
-      
-       <label htmlFor="target_amt">Target Amount</label>
-       <input type="text" id="target_amt" name="target_amt" required />
-       <br></br>
-       <br></br>
-       <button className="request-button" type="submit">Submit Request</button>
-     </form>
- );
+//  const NewCampaignForm = (
+//      <form className="container" onSubmit={handleSubmit}>
+//       <label htmlFor="minimum_contr_amt">Minimum Contribution Amount</label>
+//       <input type="text" id="minimum_contr_amt" name="minimum_contr_amt" required />   
+//       <label htmlFor="campaign_name">Campaign Name</label>
+//       <input type="text" id="campaign_name" name="campaign_name" required />  
+//      <label htmlFor="campaign_desc">Campaign Description</label>
+//       <textarea id="campaign_desc" name="campaign_desc" required />
+//       <label htmlFor="img_url">Image URL</label>
+//       <input type="text" id="img_url" name="img_url" required />
+//      
+//       <label htmlFor="target_amt">Target Amount</label>
+//       <input type="text" id="target_amt" name="target_amt" required />
+//       <br></br>
+//       <br></br>
+//       <button className="request-button" type="submit">Submit Request</button>
+//     </form>
+// );
  const { connectWallet, address, error } = useWeb3();
  error ? console.log(error) : null;
    return ( 
      <>
-      <div><h1>New Campaign Request</h1>
+      <div className={styles.title}>
+        <Text
+          h2 
+          css={{
+            textGradient: "45deg, $blue600 -20%, $pink600 50%",
+            }}>New Campaign Request</Text>
+        </div>
+      <div>
+
       { address ? (
                 <h3 >walletAddress: {address}</h3>
               ) : (
@@ -97,7 +105,9 @@ const NewRequest = () => {
                           Connect Wallet
                 </Button>
        )}
-      {NewCampaignForm}
+       <Input>
+       </Input>
+      {/*NewCampaignForm*/}
      </div>
      </>
     );
