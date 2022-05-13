@@ -63,7 +63,7 @@ export default function Home() {
                 </Row>
               </Card>
               { address ? (
-                <h3 >walletAddress: {address}</h3>
+                <h3 >walletAddress: {address.substring(0, 5)+'.....'+address.substring(address.length-4, address.length)}</h3>
               ) : (
                 //<button className={styles.btn} onClick={()=>connectWallet("injected")}>Connect Wallet</button>
                 <Button className={styles.btn} 
