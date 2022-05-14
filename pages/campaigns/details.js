@@ -151,9 +151,34 @@ const CampaignDetailsPage = () => {
     return <div className='font-semibold text-lg text-center mb-4'>
         <p>Campaign Address: {pid}</p>
         {campaignDetails ? (campaignDetails.details['owner'] !== currentAccount ? ( 
-            <><h3>you're not an owner of this campaign</h3><br /><h2>Campaign "{campaignDetails.details['name']}"</h2><span>Minimum payment: {parseInt(campaignDetails.details['minPayment']._hex, 16)}</span><br /><span>Description: {campaignDetails.details['description']}</span><br /><span>Image: {campaignDetails.details['image']}</span><br /><span>Fund raised: {parseInt(campaignDetails.details['fundReceived']._hex, 16)}</span><br /><Link block color="secondary" href={"/campaigns/contibute?pid="+campaignDetails.address}>Contribute</Link><br /> </>
+            <><h3>{campaignDetails.details['name']}</h3><br />
+             <span> <img src={campaignDetails.details['image']} ></img></span><br />
+            <br /><span>Description: {campaignDetails.details['description']}</span><br />
+            <span>Target Fund: {parseInt(campaignDetails.details['targetAmt']._hex, 16)} ETH</span><br />
+            <span>Fund raised: {parseInt(campaignDetails.details['fundReceived']._hex, 16)} ETH</span><br />
+            <br></br>
+            <span>Minimum payment: {parseInt(campaignDetails.details['minPayment']._hex, 16)} ETH</span>
+            <Link block color="secondary" href={"https://rinkeby.etherscan.io/address/"+campaignDetails.address}>View on Rinkeby Etherscan</Link>
+            <h2>Contribute Now!</h2>
+            <label htmlFor="target_amt">Amount in Ether you want to contribute</label>
+            <input type="text" id="target_amt" name="target_amt" required />
+        <br></br>
+            <Link block color="secondary" href={"/campaigns/contibute?pid="+campaignDetails.address}>Contribute</Link><br />
+             </>
           ) : ( 
-            <><h3>you're an owner of this campaign</h3> <br /><h2>Campaign "{campaignDetails.details['name']}"</h2><span>Minimum payment: {parseInt(campaignDetails.details['minPayment']._hex, 16)}</span><br /><span>Description: {campaignDetails.details['description']}</span><br /><span>Image: {campaignDetails.details['image']}</span><br /><span>Fund raised: {parseInt(campaignDetails.details['fundReceived']._hex, 16)}</span><br /><Link block color="secondary" href={"/campaigns/requestMoney?pid="+campaignDetails.address}>Request Money</Link><br /> </>
+            <><h3>{campaignDetails.details['name']}</h3> <br />
+            <span>
+            <img alt="Picture of the campaign" width={516} height={315}  src={campaignDetails.details['image']} ></img> 
+            </span><br />
+            <span>Description: {campaignDetails.details['description']}</span><br />
+            <span>Target Fund: {parseInt(campaignDetails.details['targetAmt']._hex, 16)} ETH</span><br />
+            <span>Fund raised: {parseInt(campaignDetails.details['fundReceived']._hex, 16)} ETH</span><br />
+            <span>Minimum payment: {parseInt(campaignDetails.details['minPayment']._hex, 16)} ETH</span>
+            <br />
+            <Link block color="secondary" href={"/campaigns/request?pid="+campaignDetails.address}>Withdrawal Request</Link>
+            <br /> 
+            <Link block color="secondary" href={"https://rinkeby.etherscan.io/address/"+campaignDetails.address}>View on Rinkeby Etherscan</Link>
+            </>
           )
         ) 
         : ( 

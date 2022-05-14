@@ -187,7 +187,16 @@ const Campaign = () => {
                      <div className='font-semibold text-lg text-center mb-4'>
                          {campaignDetails ? (
                              campaignDetails.map((campaign) => {
-                                return <><h2>Campaign "{campaign.details['name']}"</h2><span>Minimum payment: {parseInt(campaign.details['minPayment']._hex, 16)}</span><br /><span>Description: {campaign.details['description']}</span><br /><span>Image: {campaign.details['image']}</span><br /><span>Fund raised: {parseInt(campaign.details['fundReceived']._hex, 16)}</span><br /><Link block color="secondary" href={"/campaigns/details?pid="+campaign.address}>Campaign Details</Link><br /></>
+                                return <><h2>{campaign.details['name']}</h2>
+                                 <span><img alt="Picture of the campaign" width={280} height={160} src={campaign.details['image']} ></img> </span><br />
+                                <span>Description: {campaign.details['description']}</span><br />
+                                <span>Target Fund: {parseInt(campaign.details['targetAmt']._hex, 16)} ETH</span><br />
+                                <span>Fund raised: {parseInt(campaign.details['fundReceived']._hex, 16)} ETH</span><br />
+                                <span>Minimum payment: {parseInt(campaign.details['minPayment']._hex, 16)} ETH</span><br />
+                                <Link block color="secondary" href={"/campaigns/details?pid="+campaign.address}>View Details</Link>
+                                <br />
+                                
+                               </>
                             })
                          ) : ( <span></span> )
                          } 

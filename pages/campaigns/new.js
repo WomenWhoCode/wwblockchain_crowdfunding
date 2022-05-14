@@ -66,7 +66,7 @@ const NewRequest = () => {
   const NewCampaignForm = (
       <form className="container" onSubmit={handleSubmit}>
        <label htmlFor="minimum_contr_amt">Minimum Contribution Amount</label>
-       <input type="text" id="minimum_contr_amt" name="minimum_contr_amt" required />   
+       <input type="text" id="minimum_contr_amt" name="minimum_contr_amt" required /> ETH   
        <label htmlFor="campaign_name">Campaign Name</label>
        <input type="text" id="campaign_name" name="campaign_name" required />  
       <label htmlFor="campaign_desc">Campaign Description</label>
@@ -75,10 +75,11 @@ const NewRequest = () => {
        <input type="text" id="img_url" name="img_url" required />
       
        <label htmlFor="target_amt">Target Amount</label>
-       <input type="text" id="target_amt" name="target_amt" required />
+       <input type="text" id="target_amt" name="target_amt" required />ETH
        <br></br>
        <br></br>
-       <button className="request-button" type="submit">Submit Request</button>
+   <Button          color="gradient"
+            type="submit">Submit Request</Button>
      </form>
  );
  const { connectWallet, address, error } = useWeb3();
